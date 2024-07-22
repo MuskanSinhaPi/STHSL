@@ -2,6 +2,7 @@ import pandas as pd
 !pip install google.colab
 from google.colab import drive
 import pandas as pd
+from datetime import datetime
 
 #mounting drive
 drive.mount('/content/drive')
@@ -58,14 +59,20 @@ category_mapping = {
 # Replace the original 'Category' column with the new categories
 df['Category'] = df['Category'].map(category_mapping)
 
-# Ensure the 'Time' column has the format ':00' for seconds
-df['Time'] = df['Time'].str[:5] + ':00'
-df['Datetime'] = pd.to_datetime(df['Date'] + ' ' + df['Time'], format='%m/%d/%Y %H:%M:%S')
+# Correct the format string to match your date format
+df['Datetime'] = pd.to_datetime(df['Date'] + ' ' + df['Time'], format='%m/%d/%Y %H:%M') 
 
-# Extract the AM/PM designation
-df['AM_PM'] = df['Datetime'].dt.strftime('%p')
+# Convert to the desired format
+df['Datetime'] = df['Datetime'].dt.strftime('%m/%d/%Y %I:%M:%S %p')
 
-df = df[['Datetime','Category','X','Y']]
+# Add the AM/PM designation separately if needed
+df['AM_PM'] = df['Datetime'].apply(lambda x: datetime.strptime(x, '%m/%d/%Y %I:%M:%S %p').strftime('%p'))
+
+# Drop the original 'Date' and 'Time' columns if they are no longer needed
+df.drop(columns=['Date', 'Time'], inplace=True)
+
+# Update the dataframe to only include relevant columns
+df = df[['Datetime', 'Category', 'X', 'Y']]
 
 # Display the DataFrame
 print(df)
