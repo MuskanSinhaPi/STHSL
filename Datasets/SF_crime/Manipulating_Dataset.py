@@ -14,11 +14,10 @@ df = df[['Date','Time','Category','X','Y']]
 # Drop rows with any missing values
 df.dropna(inplace=True)
 
-# Convert the 'Date' and 'Time' columns to datetime
-df['Datetime'] = pd.to_datetime(df['Date'] + ' ' + df['Time'], format='%m/%d/%Y %H:%M:%S')
+df['Datetime'] = pd.to_datetime(df['Date'] + ' ' + df['Time'], format='%m/%d/%Y %H:%M') 
 
 # Extract the AM/PM designation
-df['AM_PM'] = df['datetime'].dt.strftime('%p')
+df['AM_PM'] = df['Datetime'].dt.strftime('%p')
 
 df = df[['Datetime','Category','X','Y']]
 
